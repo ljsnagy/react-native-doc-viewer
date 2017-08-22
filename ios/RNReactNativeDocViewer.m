@@ -37,13 +37,14 @@ RCT_EXPORT_METHOD(testModule:(NSString *)name location:(NSString *)location)
  */
 RCT_EXPORT_METHOD(openDoc:(NSArray *)array callback:(RCTResponseSenderBlock)callback)
 {
-    
+
     __weak RNReactNativeDocViewer* weakSelf = self;
     dispatch_queue_t asyncQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(asyncQueue, ^{
         NSDictionary* dict = [array objectAtIndex:0];
         NSString* urlStr = dict[@"url"];
         NSString* filename = dict[@"fileName"];
+        weakSelf.fileName = dict[@"fileName"];
         NSURL* url = [NSURL URLWithString:[urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         NSData* dat = [NSData dataWithContentsOfURL:url];
         RCTLogInfo(@"Url %@", url);
@@ -78,8 +79,8 @@ RCT_EXPORT_METHOD(openDoc:(NSArray *)array callback:(RCTResponseSenderBlock)call
             NSURL* tmpFileUrl = [[NSURL alloc] initFileURLWithPath:urlStr];
             weakSelf.fileUrl = tmpFileUrl;
         }
-    
-        
+
+
         dispatch_async(dispatch_get_main_queue(), ^{
             QLPreviewController* cntr = [[QLPreviewController alloc] init];
             cntr.delegate = weakSelf;
@@ -90,7 +91,7 @@ RCT_EXPORT_METHOD(openDoc:(NSArray *)array callback:(RCTResponseSenderBlock)call
             UIViewController* root = [[[UIApplication sharedApplication] keyWindow] rootViewController];
             [root presentViewController:cntr animated:YES completion:nil];
         });
-        
+
     });
 }
 
@@ -132,7 +133,7 @@ RCT_EXPORT_METHOD(openDocBinaryinUrl:(NSArray *)array callback:(RCTResponseSende
 
         [dat writeToURL:tmpFileUrl atomically:YES];
         weakSelf.fileUrl = tmpFileUrl;
-        
+
         dispatch_async(dispatch_get_main_queue(), ^{
             QLPreviewController* cntr = [[QLPreviewController alloc] init];
             cntr.delegate = weakSelf;
@@ -143,7 +144,7 @@ RCT_EXPORT_METHOD(openDocBinaryinUrl:(NSArray *)array callback:(RCTResponseSende
             UIViewController* root = [[[UIApplication sharedApplication] keyWindow] rootViewController];
             [root presentViewController:cntr animated:YES completion:nil];
         });
-        
+
     });
 }
 
@@ -154,7 +155,7 @@ RCT_EXPORT_METHOD(openDocBinaryinUrl:(NSArray *)array callback:(RCTResponseSende
  */
 RCT_EXPORT_METHOD(openDocb64:(NSArray *)array callback:(RCTResponseSenderBlock)callback)
 {
-    
+
     __weak RNReactNativeDocViewer* weakSelf = self;
     dispatch_queue_t asyncQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(asyncQueue, ^{
@@ -180,7 +181,7 @@ RCT_EXPORT_METHOD(openDocb64:(NSArray *)array callback:(RCTResponseSenderBlock)c
 
         [dat writeToURL:tmpFileUrl atomically:YES];
         weakSelf.fileUrl = tmpFileUrl;
-        
+
         dispatch_async(dispatch_get_main_queue(), ^{
             QLPreviewController* cntr = [[QLPreviewController alloc] init];
             cntr.delegate = weakSelf;
@@ -191,7 +192,7 @@ RCT_EXPORT_METHOD(openDocb64:(NSArray *)array callback:(RCTResponseSenderBlock)c
             UIViewController* root = [[[UIApplication sharedApplication] keyWindow] rootViewController];
             [root presentViewController:cntr animated:YES completion:nil];
         });
-        
+
     });
 }
 
@@ -247,7 +248,11 @@ RCT_EXPORT_METHOD(playMovie:(NSString *)file callback:(RCTResponseSenderBlock)ca
     return self.fileUrl;
 }
 
+- (NSURL*)previewItemTitle
+{
+    return self.fileName;
+}
+
 
 
 @end
-  

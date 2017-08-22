@@ -15,6 +15,6 @@
 
 @interface RNReactNativeDocViewer : NSObject <RCTBridgeModule, QLPreviewControllerDelegate, QLPreviewControllerDataSource, QLPreviewItem>
 @property (strong, nonatomic) NSURL* fileUrl;
+@property (strong, nonatomic) NSString* fileName;
 @property (readonly) NSURL* previewItemURL;
 @end
-  
